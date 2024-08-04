@@ -23,6 +23,7 @@ Things I tried but could not get to work / would not work:
 -	I had added one more FC hidden layer to the model but it took so much longer in the RL step that I got a TimeoutError.
 -	I also tried using more training data but using 65536 examples gives memory error.
 -	I tried different activation functions such as ReLU, Leaky ReLU, SELU, tanh, sigmoid and the one which worked best was ReLU.
+-	I tried an entirely different approach where first, the model is trained by a RL algorithm about move legality. Then it is trained in a supervised manner from the Lichess' dataset and finally plays against itself repeatedly in an RL algorithm.
 
 Scope of Improvement:
 -	More training data. I have only used ~25% of the data in the lichess database. More training data is almost always better so I believe using more should help the model perform better.
