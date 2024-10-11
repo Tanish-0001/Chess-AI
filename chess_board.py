@@ -16,8 +16,9 @@ def square_to_index(square):
 def get_chess_board(board):
     """
     :param board: chess board
-    :return: 14x8x8 numpy array comprised of 14 8x8 arrays which store the presence of pieces. The first 6 arrays store
-            white pieces, the next 6 store black pieces, and the remaining 2 store the valid moves
+    :return: 12x8x8 numpy array comprised of 12 8x8 arrays which store the presence of pieces. The first 6 arrays store
+            white pieces, the next 6 store black pieces. In each 8x8 array, the actual piece is denoted by -1 and its
+            legal moves by 1
             order: pawn, knight, bishop, rook, queen, king
     """
 
@@ -47,6 +48,32 @@ def get_chess_board(board):
     return chess_board
 
 
+def get_board_from_featurization(featurized_board):
+    """
+    :param featurized_board: 12x8x8 numpy array, where the first 6 layers are white pieces and the next 6 layers are black pieces.
+                             The actual pieces are denoted by -1 and the legal moves are represented by 1.
+    :return: a chess.Board() object reconstructed from the featurization
+    """
+
+    board = chess.Board()
+    board.clear()  # Clear the board to set up pieces from scratch
+
+    piece_types = [chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN, chess.KING]
+
+    for piece_index in range(12):
+        for rank in range(8):
+            for file in range(8):
+                if featurized_board[piece_index, rank, file] == -1:
+                    square = chess.square(file, 7 - rank)
+
+                    piece_type = piece_types[piece_index % 6]
+                    color = chess.BLACK if piece_index >= 6 else chess.WHITE
+
+                    board.set_piece_at(square, chess.Piece(piece_type, color))
+
+    return board
+
+
 def square_to_uci(position: int):
     """
     :param position: integer between 0 and 63
@@ -64,4 +91,5 @@ if __name__ == "__main__":
     new_board = chess.Board()
     new_board.push_uci("e2e4")
     print(get_chess_board(new_board))
+    print(get_board_from_featurization(get_chess_board(new_board)))
 
